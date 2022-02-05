@@ -69,15 +69,17 @@ def save_text(filename, text):
     with open(filename, 'w', encoding="UTF-8") as f:
         f.write(text)
 
-def format_text(loading_file, saving_file):
-    """Load a file, create a proper text format and save it in selected file"""
-    # Load text and store lines in a list
-    lines = load_text(loading_file)
+def format_text(loading_directory, saving_directory, loading_filenames=[]):
+    """Load files, convert text and save in selected directory"""
+    for loading_filename in loading_filenames:
+        # Load text from file and store lines in a list
+        lines = load_text(f"{loading_directory}/{loading_filename}")
 
-    # Format the text properly
-    words = get_words(lines)
-    formatted_lines = get_formatted_lines(words)
-    formatted_text = get_formatted_text(formatted_lines)
+        # Format the text properly
+        words = get_words(lines)
+        formatted_lines = get_formatted_lines(words)
+        formatted_text = get_formatted_text(formatted_lines)
     
-    # Save formatted text in selected file
-    save_text(saving_file, formatted_text)
+        # Save formatted text in selected directory (saving filename is prefix)
+        saving_filepath = f"{saving_directory}/FT_{loading_filename}"
+        save_text(saving_filepath, formatted_text)

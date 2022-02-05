@@ -1,8 +1,10 @@
+import os
+
 import proper_text_formatting as ptf
 
 import tkinter as tk
 from tkinter import ttk
-from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter.filedialog import askdirectory, askopenfilename
 from tkinter.messagebox import showinfo
 
 # Display main window
@@ -14,17 +16,51 @@ root.config(bg='lightgrey')
 
 def select_input_file():
     """Select input file path"""
-    file_selected = askopenfilename()
-    input_filename.set(file_selected)
+    global input_files
+    global input_directory
+
+    # Get filepath and store value in input-entry StringVar
+    input_files = []
+    file_path = askopenfilename()
+    input_path.set(file_path)
+
+    # From file-path get filename
+    filename = os.path.basename(file_path)
+
+    # Store file name as element in a list
+    input_files.append(filename)
+
+    # Get directory path of file
+    input_directory = os.path.dirname(file_path)
+    print(input_directory)
+
+def select_input_directory():
+    """Select input directory path"""
+    global input_files
+    global input_directory
+
+    # Get directory path and store value in input-entry StringVar
+    input_files = []
+    input_directory = askdirectory()
+    input_path.set(input_directory)
+
+    # Store each file name as element in a list
+    for file in os.listdir(input_directory):
+        if file.endswith(".txt"):
+            input_files.append(file)
 
 def select_output_file():
     """Select output directory path"""
-    directory_selected = asksaveasfilename()
-    output_directory.set(f"{directory_selected}.txt")
+    output_directory = askdirectory()
+    output_path.set(output_directory)
 
 def convert_clicked():
     """Callback when the convertion button is clicked"""
-    msg = f'Path to new file: {output_directory.get()}'
+    # Call format_text from ptf module
+    ptf.format_text(input_directory, output_path.get(), input_files)
+
+    # Showinfo
+    msg = f'Path to output directory: {output_path.get()}'
     showinfo(
         title="Info",
         message=msg
@@ -42,47 +78,52 @@ def main_info():
     )
 
 # Create input label
-input_label = tk.Label(root, text="File Path:", font=("Arial", 16))
+input_label = tk.Label(root, text="Load File or Folder:",
+                        font=("Arial", 16))
 input_label.config(bg='lightgrey')
 input_label.place(relx=0.5, rely=0.08, anchor="n")
 
-# Create input browsing button
-input_browser = ttk.Button(root, text="Browse", command=select_input_file)
-input_browser.place(relx=0.5, rely=0.24, anchor='n')
+# Create input file-path button
+btn_input_file = ttk.Button(root, text="Choose File...", width=17,
+                            command=select_input_file)
+btn_input_file.place(relx=0.38, rely=0.24, anchor='n')
 
-# Display input path (create StringVar connected to it's label & browse button)
-input_filename = tk.StringVar(input_browser)
-input_path_label = tk.Entry(root, textvariable=input_filename,
+# Create input directory-path button
+btn_input_directory = ttk.Button(root, text="Choose Folder...", width=17,
+                            command=select_input_directory)
+btn_input_directory.place(relx=0.62, rely=0.24, anchor='n')
+
+# Create readonly entry and display StringVar connected to input buttons
+input_path = tk.StringVar()
+input_path_entry = tk.Entry(root, textvariable=input_path,
                         font=("Arial", 11), bd=0, state="readonly", width=40)
-input_path_label.config(bg='lightgrey')
-input_path_label.place(relx=0.5, rely=0.16, anchor='n')
+input_path_entry.place(relx=0.5, rely=0.16, anchor='n')
 
 # Create output label
-output_label = tk.Label(root, text="File Destination (without extension):",
+output_label = tk.Label(root, text="Save output at Folder:",
                         font=("Arial", 16))
 output_label.config(bg='lightgrey')
 output_label.place(relx=0.5, rely=0.4, anchor='n')
 
-# Create output browsing button
-output_browser = ttk.Button(root, text="Browse", command=select_output_file)
-output_browser.place(relx=0.5, rely=0.56, anchor='n')
+# Create output directory-path button
+btn_output_directory = ttk.Button(root, text="Choose Folder...", width=17,
+                            command=select_output_file)
+btn_output_directory.place(relx=0.5, rely=0.56, anchor='n')
 
-# Display output path (create StringVar connected to it's label & browse button)
-output_directory = tk.StringVar(output_browser)
-output_path_label = tk.Entry(root, textvariable=output_directory,
+# Create readonly entry and display StringVar connected to output button
+output_path = tk.StringVar()
+output_path_entry = tk.Entry(root, textvariable=output_path,
                         font=("Arial", 11), bd=0, state="readonly", width=40)
-output_path_label.place(relx=0.5, rely=0.48, anchor='n')
+output_path_entry.place(relx=0.5, rely=0.48, anchor='n')
 
 # Create convert button (sends above data to ptf.format_text and displays info)
-convert_button = tk.Button(root, text="Convert",
-                command=lambda:[ptf.format_text(input_filename.get(),
-                            f"{output_directory.get()}"), convert_clicked()])
-convert_button.config(width=20, bg='green', font=("Arial", 14, "bold"))
-convert_button.place(relx=0.5, rely=0.78, anchor='n')
+btn_convert = tk.Button(root, text="Convert", command=convert_clicked)
+btn_convert.config(width=20, bg='green', font=("Arial", 14, "bold"))
+btn_convert.place(relx=0.5, rely=0.78, anchor='n')
 
 # Create an info button to describe the program to user
-info_button = tk.Button(root, text="Info", width=5, command=main_info)
-info_button.place(relx=0.95, rely=0.95, anchor='se')
+btn_info = tk.Button(root, text="Info", width=5, command=main_info)
+btn_info.place(relx=0.95, rely=0.95, anchor='se')
 
 # Run main program
 root.mainloop()
