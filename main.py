@@ -49,7 +49,7 @@ def select_input_directory():
         if file.endswith(".txt"):
             input_files.append(file)
 
-def select_output_file():
+def select_output_directory():
     """Select output directory path"""
     output_directory = askdirectory()
     output_path.set(output_directory)
@@ -107,7 +107,7 @@ output_label.place(relx=0.5, rely=0.4, anchor='n')
 
 # Create output directory-path button
 btn_output_directory = ttk.Button(root, text="Choose Folder...", width=17,
-                            command=select_output_file)
+                            command=select_output_directory)
 btn_output_directory.place(relx=0.5, rely=0.56, anchor='n')
 
 # Create readonly entry and display StringVar connected to output button
