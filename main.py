@@ -13,6 +13,7 @@ root.geometry("512x384")
 root.resizable(False, False)
 root.title("Format Text by Dimitris Charitakis")
 root.config(bg='lightgrey')
+root.iconbitmap("images/ft.ico")
 
 def select_input_file():
     """Select input file path"""
