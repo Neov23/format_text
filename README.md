@@ -10,7 +10,6 @@ I started this project to expand my python skills and learn Tkinter a bit.
 
 ## Guide
 
----
 This repo includes the python files with raw code, but also a "Format Text"
 directory with an executable in it. If you want to easily use the program,
 download the "Format Text" directory and read the "README.txt" that is stored
